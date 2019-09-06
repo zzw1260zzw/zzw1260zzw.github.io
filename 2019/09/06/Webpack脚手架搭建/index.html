@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link rel="stylesheet" href="/lib/pace/pace-theme-mac-osx.min.css?v=1.0.2">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: 'search.xml'
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="1.了解Webpack相关 什么是webpack  Webpack是一个模块打包器(bundler)。 在Webpack看来, 前端的所有资源文件(js/json/css/img/less/…)都会作为模块处理。 它将根据模块的依赖关系进行静态分析，生成对应的静态资源   四个核心概念  Entry：入口起点(entry point)指示 webpack 应该使用哪个模块，来作为构建其内部依赖图的">
+<meta name="keywords" content="环境搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Webpack脚手架搭建">
+<meta property="og:url" content="http://zhangzhiwen.top/2019/09/06/Webpack脚手架搭建/index.html">
+<meta property="og:site_name" content="Mr.zhang">
+<meta property="og:description" content="1.了解Webpack相关 什么是webpack  Webpack是一个模块打包器(bundler)。 在Webpack看来, 前端的所有资源文件(js/json/css/img/less/…)都会作为模块处理。 它将根据模块的依赖关系进行静态分析，生成对应的静态资源   四个核心概念  Entry：入口起点(entry point)指示 webpack 应该使用哪个模块，来作为构建其内部依赖图的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-06T03:26:15.270Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Webpack脚手架搭建">
+<meta name="twitter:description" content="1.了解Webpack相关 什么是webpack  Webpack是一个模块打包器(bundler)。 在Webpack看来, 前端的所有资源文件(js/json/css/img/less/…)都会作为模块处理。 它将根据模块的依赖关系进行静态分析，生成对应的静态资源   四个核心概念  Entry：入口起点(entry point)指示 webpack 应该使用哪个模块，来作为构建其内部依赖图的">
+  <link rel="canonical" href="http://zhangzhiwen.top/2019/09/06/Webpack脚手架搭建/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Webpack脚手架搭建 | Mr.zhang</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mr.zhang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br/>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br/>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br/>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br/>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-search">
+          <a href="javascript:;" class="popup-trigger">
+          
+            <i class="menu-item-icon fa fa-search fa-fw"></i> <br/>搜索</a>
+        </li>
+      
+    </ul>
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zhangzhiwen.top/2019/09/06/Webpack脚手架搭建/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="张志文">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mr.zhang">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Webpack脚手架搭建
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-06 10:18:02 / 修改时间：11:26:15" itemprop="dateCreated datePublished" datetime="2019-09-06T10:18:02+08:00">2019-09-06</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端/" itemprop="url" rel="index"><span itemprop="name">前端</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon"
+              >
+                <i class="fa fa-eye"></i>
+                 阅读次数： 
+                <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+              </span>
+            </span>
+          
+            
+  
+  <span class="post-meta-item">
+    
+    <span class="post-meta-item-icon">
+      <i class="fa fa-comment-o"></i>
+    </span>
+    
+      <span class="post-meta-item-text">评论数：</span>
+    
+  
+    <a href="/2019/09/06/Webpack脚手架搭建/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/09/06/Webpack脚手架搭建/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+          <br/>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-了解Webpack相关"><a href="#1-了解Webpack相关" class="headerlink" title="1.了解Webpack相关"></a>1.了解Webpack相关</h3><ul>
+<li><p>什么是webpack</p>
+<ul>
+<li>Webpack是一个模块打包器(bundler)。</li>
+<li>在Webpack看来, 前端的所有资源文件(js/json/css/img/less/…)都会作为模块处理。</li>
+<li>它将根据模块的依赖关系进行静态分析，生成对应的静态资源</li>
+</ul>
+</li>
+<li><p>四个核心概念</p>
+<ul>
+<li>Entry：入口起点(entry point)指示 webpack 应该使用哪个模块，来作为构建其内部依赖图的开始。   </li>
+<li>Output：output 属性告诉 webpack 在哪里输出它所创建的 bundles，以及如何命名这些文件，默认值为 ./dist。</li>
+<li>Loader：loader 让 webpack 能够去处理那些非 JavaScript 文件（webpack 自身只能解析： JavaScript、json）。</li>
+<li>Plugins：插件则可以用于执行范围更广的任务。插件的范围包括，从打包优化和压缩，一直到重新定义环境中的变量等。</li>
+</ul>
+</li>
+<li><p>理解Loader</p>
+<ul>
+<li><p>Webpack 本身只能加载JS/JSON模块，如果要加载其他类型的文件(模块)，就需要使用对应的loader 进行转换/加载</p>
+</li>
+<li><p>Loader 本身也是运行在 node.js 环境中的 JavaScript 模块</p>
+</li>
+<li><p>它本身是一个函数，接受源文件作为参数，返回转换的结果</p>
+</li>
+<li><p>loader 一般以 xxx-loader 的方式命名，xxx 代表了这个 loader 要做的转换功能，比如 json-loader。</p>
+</li>
+</ul>
+</li>
+<li><p>理解Plugins</p>
+<ul>
+<li>插件件可以完成一些loader不能完成的功能。</li>
+<li>插件的使用一般是在 webpack 的配置信息 plugins 选项中指定。</li>
+<li>CleanWebpackPlugin: 自动清除指定文件夹资源</li>
+<li>HtmlWebpackPlugin: 自动生成HTML文件并</li>
+<li>UglifyJSPlugin: 压缩js文件</li>
+</ul>
+</li>
+<li><p>配置文件(默认)</p>
+<ul>
+<li>webpack.config.js : 是一个node模块，返回一个 json 格式的配置信息对象</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-学习文档"><a href="#2-学习文档" class="headerlink" title="2.学习文档 :"></a>2.学习文档 :</h3><ul>
+<li>webpack官网: <a href="http://webpack.github.io/" target="_blank" rel="noopener">http://webpack.github.io/</a></li>
+<li>webpack3文档(英文): <a href="https://webpack.js.org/" target="_blank" rel="noopener">https://webpack.js.org/</a></li>
+<li>webpack3文档(中文): <a href="https://doc.webpack-china.org/" target="_blank" rel="noopener">https://doc.webpack-china.org/</a></li>
+</ul>
+<h3 id="3-webpack的基本使用"><a href="#3-webpack的基本使用" class="headerlink" title="3.webpack的基本使用"></a>3.webpack的基本使用</h3><ul>
+<li><p>生成package.json文件</p>
+</li>
+<li><p>安装webpack（都要安装）：</p>
+<ul>
+<li><p>npm install webpack@3 -g  //全局安装</p>
+</li>
+<li><p>npm install webpack@3 –save-dev  //局部安装</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>小试牛刀处理一个js<br>执行命令：webpack src/js/index.js build/index.js<br>观察发现webpack会把es6的模块化语法，直接编译为浏览器识别的模块化语法，不过类似于箭头函数等依然存在</li>
+</ul>
+<h3 id="4-使用webpack配置文件"><a href="#4-使用webpack配置文件" class="headerlink" title="4.使用webpack配置文件"></a>4.使用webpack配置文件</h3><ul>
+<li><p>webpack的核心配置文件：执行webpack命令时，会在当前目录查找webpack.config.js文件读取配置</p>
+</li>
+<li><p>1.通过Commonjs暴露出去一个对象</p>
+</li>
+<li><p>2.四个关键的概念：</p>
+<ul>
+<li>entry：入口文件，将所有打包资源全部引入</li>
+<li>output：输出文件，将资源输出到指定目录下</li>
+<li>loader：处理webpack不能够解析的模块</li>
+<li>plugins：执行loader做不了的任务</li>
+</ul>
+</li>
+<li><p>3.如何找到自己想要的loader？</p>
+<ul>
+<li>优先去官网找自己想要的loader，没有再去npm官网上找。</li>
+</ul>
+</li>
+<li><p>4.在终端输入：<code>webpack ./src/js/app.js ./build/js/built.js</code></p>
+<ul>
+<li>问题：这种方式只能够编译打包js、json文件，其他文件处理不了</li>
+</ul>
+</li>
+<li><p>5.<code>webpack --display-modules</code>可以查看隐藏的任务</p>
+<p><code>const path = require(&#39;path&#39;);</code> //path内置的模块，用来设置路径。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">module.exports = &#123;</span><br><span class="line">            //入口（从哪里进入开始解析）</span><br><span class="line">             entry:&apos;./src/js/index.js&apos;,</span><br><span class="line"></span><br><span class="line">​            //出口（最终加工完的代码输出到哪里）</span><br><span class="line">​            output: &#123;// 输出配置</span><br><span class="line">​           path: path.resolve(__dirname, &apos;build&apos;),//输出文件路径配置</span><br><span class="line">​           filename: &apos;index.js&apos;,// 输出文件名</span><br><span class="line">​                          &#125;</span><br><span class="line">​            &#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-在package-json中配置npm命令"><a href="#5-在package-json中配置npm命令" class="headerlink" title="5.在package.json中配置npm命令"></a>5.在package.json中配置npm命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">       &quot;build&quot;: &quot;webpack&quot;</span><br><span class="line"> &#125;,</span><br><span class="line">//打包应用运行:npm run build</span><br></pre></td></tr></table></figure>
+
+<p>​           </p>
+<h3 id="6-使用loader解析less文件（使用less-loader）"><a href="#6-使用loader解析less文件（使用less-loader）" class="headerlink" title="6.使用loader解析less文件（使用less-loader）"></a>6.使用loader解析less文件（使用less-loader）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1. 安装：npm install --save-dev less-loader less</span><br><span class="line">2. 安装：npm install css-loader style-loader --save-D</span><br><span class="line">3. 向rules中写入配置：</span><br><span class="line">	&#123;</span><br><span class="line">        test: /\.less$/,</span><br><span class="line">        use: [&#123;</span><br><span class="line">            loader: &quot;style-loader&quot; // 创建一个style标签，将js中的css放入其中</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">            loader: &quot;css-loader&quot; // 将css以CommonJs语法打包到js中</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">            loader: &quot;less-loader&quot; // 将less转换成css</span><br><span class="line">        &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">4. 在入口js中引入less文件：import &apos;../less/demo.less&apos;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-file-loader处理图片资源"><a href="#7-file-loader处理图片资源" class="headerlink" title="7.file-loader处理图片资源"></a>7.file-loader处理图片资源</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1. 安装：npm install --save-dev file-loader</span><br><span class="line">2. 新增loader：</span><br><span class="line">	&#123;</span><br><span class="line">    test: /\.(png|jpg|gif)$/,</span><br><span class="line">    use: [</span><br><span class="line">      &#123;</span><br><span class="line">        loader: &apos;file-loader&apos;,       //如果不做图片转base64，可以用file-loader</span><br><span class="line">        options: &#123;</span><br><span class="line">          outputPath:&apos;img&apos;,         //图片最终输出的位置</span><br><span class="line">          publicPath:&apos;../build/img&apos;,		//css资源图片路径</span><br><span class="line">  		  name:&apos;[hash:5].[ext]&apos;     //修改图片名称</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-url-loader处理图片资源-amp-base64"><a href="#8-url-loader处理图片资源-amp-base64" class="headerlink" title="8.url-loader处理图片资源&amp;base64"></a>8.url-loader处理图片资源&amp;base64</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. 安装：npm install --save-dev url-loader</span><br><span class="line">2. 修改loader为：</span><br><span class="line">	 &#123;</span><br><span class="line">        test: /\.(png|jpg|gif)$/,</span><br><span class="line">        use: [</span><br><span class="line">          &#123;</span><br><span class="line">            loader: &apos;url-loader&apos;,       //如果不做图片转base64，可以用file-loader</span><br><span class="line">            options: &#123;</span><br><span class="line">              limit: 8192,              </span><br><span class="line">              outputPath:&apos;img&apos;,         //图片最终输出的位置</span><br><span class="line">              publicPath:&apos;./img&apos;,		//css资源图片路径</span><br><span class="line">              name:&apos;[hash:5].[ext]&apos;     //修改图片名称</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">3. 备注：一定要注意路径的问题</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-使用插件提取css-合并为单独的文件"><a href="#9-使用插件提取css-合并为单独的文件" class="headerlink" title="9.使用插件提取css,合并为单独的文件"></a>9.使用插件提取css,合并为单独的文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">1. 安装ExtractTextWebpackPluginh插件：npm install --save-dev extract-text-webpack-plugin</span><br><span class="line">2. 引入插件：const ExtractTextPlugin = require(&quot;extract-text-webpack-plugin&quot;);</span><br><span class="line">3. 新增plugins插件配置项，并实例化ExtractTextPlugin插件：</span><br><span class="line">	plugins: [</span><br><span class="line">		//提取css为单独文件</span><br><span class="line">		new ExtractTextPlugin(&quot;./css/index.css&quot;),</span><br><span class="line">	]</span><br><span class="line">4. 修改原less-loader的配置如下：</span><br><span class="line">	&#123;</span><br><span class="line">    test: /\.less$/, //匹配文件的规则，说明该loader对哪个文件生效</span><br><span class="line">    use: ExtractTextPlugin.extract(&#123;</span><br><span class="line">      fallback: &quot;style-loader&quot;,</span><br><span class="line">      use: [&quot;css-loader&quot;,&quot;less-loader&quot;]</span><br><span class="line">    &#125;)</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-js语法检查"><a href="#10-js语法检查" class="headerlink" title="10.js语法检查"></a>10.js语法检查</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1. 安装jshint-loader：npm i jshint-loader --save -D</span><br><span class="line">2. 新增loader：</span><br><span class="line">	&#123;</span><br><span class="line">    test: /\.js$/, // 涵盖 .js 文件</span><br><span class="line">    enforce: &quot;pre&quot;, // 预先加载好 jshint loader</span><br><span class="line">    exclude: /node_modules/, // 排除掉 node_modules 文件夹下的所有文件</span><br><span class="line">    use: [</span><br><span class="line">      &#123;</span><br><span class="line">        loader: &quot;jshint-loader&quot;,</span><br><span class="line">        options: &#123;</span><br><span class="line">          //jslint 的错误信息在默认情况下会显示为 warning（警告）类信息</span><br><span class="line">          //将 emitErrors 参数设置为 true 可使错误显示为 error（错误）类信息</span><br><span class="line">          emitErrors: false,</span><br><span class="line"></span><br><span class="line">          //jshint 默认情况下不会打断webpack编译</span><br><span class="line">          //如果你想在 jshint 出现错误时，立刻停止编译</span><br><span class="line">          //请设置 failOnHint 参数为true</span><br><span class="line">          failOnHint: false</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br><span class="line">3. 备注：有一个小坑，就是仅仅安装jshint-loader还不够，还要安装js-hint,命令：npm i jshint --save -D</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-es6转es5"><a href="#11-es6转es5" class="headerlink" title="11.es6转es5"></a>11.es6转es5</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. 安装babel-loader，命令：npm install babel-loader babel-core babel-preset-es2015 --save -D</span><br><span class="line">2. 配置新的loader：</span><br><span class="line">    &#123;</span><br><span class="line">        test: /\.js$/,</span><br><span class="line">        exclude: /(node_modules|bower_components)/,</span><br><span class="line">        use: &#123;</span><br><span class="line">          loader: &apos;babel-loader&apos;,</span><br><span class="line">          options: &#123;</span><br><span class="line">            presets: [&apos;es2015&apos;]</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">   &#125;</span><br><span class="line">3. 坑！提示找不到&quot;@babel/core&quot;，根据提示执行：npm i babel-loader@7 --save -D</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-html文件的处理和清除文件夹"><a href="#12-html文件的处理和清除文件夹" class="headerlink" title="12.html文件的处理和清除文件夹"></a>12.html文件的处理和清除文件夹</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. 对于html的操作，虽然有了html-loader这个loader，不过他基本做不了什么，我们的需求是：</span><br><span class="line">   想让webpack自动的帮我们创建一个html，然后把我们想要引入的东西引入进来，所以要借助插件。</span><br><span class="line">2. 使用插件HtmlWebpackPlugin，安装：npm install --save-dev html-webpack-plugin</span><br><span class="line">3. 引入插件：var HtmlWebpackPlugin = require(&apos;html-webpack-plugin&apos;);</span><br><span class="line">4. 新增一个插件配置项：</span><br><span class="line">	new HtmlWebpackPlugin(&#123;</span><br><span class="line">    title:&quot;webpack&quot;,</span><br><span class="line">    filename:&quot;index.html&quot;,</span><br><span class="line">    template:&quot;./src/index.html&quot;</span><br><span class="line">   &#125;),</span><br><span class="line">   备注：要在html模板中写入&lt;title&gt;&lt;%= htmlWebpackPlugin.options.title %&gt;&lt;/title&gt;，title配置才生效</span><br><span class="line">5. 删除掉模板html中的所有引入</span><br><span class="line">6. 为了清空工作目录，安装插件：clean-webpack-plugin，命令：npm i clean-webpack-plugin -D</span><br><span class="line">7. 引入插件： const CleanWebpackPlugin = require(&apos;clean-webpack-plugin&apos;)</span><br><span class="line">8. 实例一个插件：</span><br><span class="line">	new CleanWebpackPlugin(&apos;./build&apos;)</span><br><span class="line">备注：最新版的CleanWebpackPlugin不传任何参数</span><br></pre></td></tr></table></figure>
+
+<h3 id="13-build环境的搭建"><a href="#13-build环境的搭建" class="headerlink" title="13.build环境的搭建"></a>13.build环境的搭建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. 新建文件目录：config</span><br><span class="line">2. 移动webpack.config.js文件到config中，改名为：webpack.build.js</span><br><span class="line">3. 通过执行：webpack --display-modules --config ./config/webpack.build.js 指定配置文件运行</span><br><span class="line">4. 完善一下：在package.json中自定义命令：&quot;build&quot;: &quot;webpack --display-modules --config ./config/webpack.build.js&quot;</span><br><span class="line">5. 以后可以通过：npm run build 代替完整命令</span><br><span class="line">6. 【问题】：发现build文件夹出现在了config中，解决办法如下：</span><br><span class="line">	修改出口output中的path为：resolve(__dirname, &apos;../build&apos;)</span><br><span class="line">7. 【问题】：上一步的清空位置发生了改变，解决办法如下：</span><br><span class="line">	修改CleanWebpackPlugin插件的配置如下：</span><br><span class="line">		new CleanWebpackPlugin(&apos;./build&apos;,&#123;</span><br><span class="line">  			root:resolve(__dirname,&apos;../&apos;)</span><br><span class="line">		&#125;)</span><br><span class="line">备注：如果使用的clean-webpack-plugin插件是2.0以上的，则不会出现问题7</span><br></pre></td></tr></table></figure>
+
+<h3 id="14-dev环境的搭建"><a href="#14-dev环境的搭建" class="headerlink" title="14.dev环境的搭建"></a>14.dev环境的搭建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">1. 复制一份webpack.build.js，改名为：webpack.dev.js</span><br><span class="line">2. 安装dev-server：npm i webpack-dev-server@2 -D（下载第2个版本，3版本有兼容性问题）</span><br><span class="line">3. 修改package.json的配置：&quot;dev&quot;: &quot;webpack-dev-server --config ./config/webpack.dev.js&quot;</span><br><span class="line">4. 在webpack.dev.js中配置dev服务器编：</span><br><span class="line">    //配置开发服务器</span><br><span class="line">      devServer: &#123;</span><br><span class="line">        hot: true,</span><br><span class="line">        open:true,</span><br><span class="line">        port:3001,</span><br><span class="line">        compress:true</span><br><span class="line">      &#125;</span><br><span class="line">	备注：官网--&gt;配置--&gt;开发中server(devserver)可见详细配置</span><br><span class="line">5. 启用HMR（热模替换）</span><br><span class="line">    引入webppack：const webpack = require(&apos;webpack&apos;);</span><br><span class="line">    追加一个插件：new webpack.HotModuleReplacementPlugin()</span><br><span class="line">6. 存在的问题：改了css、html还得手动刷新才可以，解决如下：</span><br><span class="line">7. 【 解决css更新问题】因为css用的是插件，不是loader，所以不行，解决办法：重新使用loader的方式。</span><br><span class="line">8. 【 解决html更新问题】因为html也是插件，办法：html依然用插件，追加使用loader，安装：npm i html-loader -D，新增html-loader配置项如下：</span><br><span class="line"> &#123;</span><br><span class="line">    test: /\.(html)$/,</span><br><span class="line">    use: &#123;</span><br><span class="line">      loader: &apos;html-loader&apos;,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  同时entry重写为:[&apos;./src/js/index.js&apos;,&apos;./src/index.html&apos;]</span><br><span class="line">  备注：需要注意的是：dev方式的运行是加载在内存中的，没有任何输出</span><br></pre></td></tr></table></figure>
+
+<h3 id="15-提取公共代码实现复用"><a href="#15-提取公共代码实现复用" class="headerlink" title="15.提取公共代码实现复用"></a>15.提取公共代码实现复用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 参考webpack.build.js，新增：webpack.common.js</span><br><span class="line">2. webpack.common.js中删除所有css的loader，删除CleanWebpackPlugin，删除ExtractTextPlugin插件，删除最上方二者的引用</span><br><span class="line">3. 在webpack.build.js上方引入：const common = require(&apos;./webpack.common&apos;)</span><br><span class="line">4. 安装合并库：npm i webpack-merge -D，引入merge库：const merge = require(&apos;webpack-merge&apos;)</span><br><span class="line">5. module.exports = merge(common,&#123;当前文件所有配置&#125;)</span><br><span class="line">6. 剔除webpack.build.js中：入口，出口，图片处理，js语法检查，es6转换，HtmlWebpackPlugin</span><br><span class="line">7. 剔除webpack.dev.js中：出口，图片处理，js语法检查，es6转换，插件只保留：HotModuleReplacementPlugin</span><br></pre></td></tr></table></figure>
+
+<h3 id="16-prod环境配置"><a href="#16-prod环境配置" class="headerlink" title="16.prod环境配置"></a>16.prod环境配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">* 复制webpack.build.js，改名：webpack.prod.js</span><br><span class="line">* package.json中追加：&quot;prod&quot;: &quot;webpack --display-modules --config ./config/webpack.prod.js&quot;,</span><br><span class="line">* pro模式输出的文件在dist文件夹中，修改出口配置：path: resolve(__dirname, &apos;../dist&apos;),filename: &apos;./js/[name].[hash:10].js&apos;</span><br><span class="line">* 修改css插件配置：new ExtractTextPlugin(&quot;./css/[name].[hash:10].css&quot;),	</span><br><span class="line"></span><br><span class="line">【压缩js】</span><br><span class="line">* 使用插件（用于压缩js文件）：UglifyjsWebpackPlugin</span><br><span class="line">* 引入webpack：const webpack = require(&apos;webpack&apos;)</span><br><span class="line">* 插件中新增配置：new webpack.optimize.UglifyJsPlugin(&#123;sourceMap:true&#125;)</span><br><span class="line">* 追加一个配置（与插件同级）：devtool:&apos;source-map&apos;</span><br><span class="line"></span><br><span class="line">【css扩展前缀】</span><br><span class="line">* 使用loader：postcss-loader，执行安装：npm i -D postcss-loader</span><br><span class="line">* 在css的loader配置中加入postcss-loader：use: [&quot;css-loader&quot;,&quot;postcss-loader&quot;,&quot;less-loader&quot;]</span><br><span class="line">* 在根目录新建postcss.config.js文件，配置如下内容：</span><br><span class="line">	module.exports = &#123;</span><br><span class="line">	  &quot;plugins&quot;: &#123;</span><br><span class="line">	    &quot;autoprefixer&quot;: &#123;</span><br><span class="line">	      &quot;browsers&quot;: [</span><br><span class="line">	        &quot;ie &gt;= 8&quot;,</span><br><span class="line">	        &quot;ff &gt;= 30&quot;,</span><br><span class="line">	        &quot;chrome &gt;= 34&quot;,</span><br><span class="line">	        &quot;safari &gt;= 7&quot;,</span><br><span class="line">	        &quot;opera &gt;= 23&quot;</span><br><span class="line">	      ]</span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line">* 安装所需的autoprefixer，命令：npm i autoprefixer -D</span><br><span class="line"></span><br><span class="line">【压缩css】</span><br><span class="line">* 使用less-plugin-clean-css插件，命令：npm i less-plugin-clean-css -D</span><br><span class="line">* 引入插件：const CleanCSSPlugin = require(&quot;less-plugin-clean-css&quot;);</span><br><span class="line">* 替换use中的less-loader为对象,如下：</span><br><span class="line">	loader: &quot;less-loader&quot;, options: &#123;</span><br><span class="line">                plugins: [</span><br><span class="line">                    new CleanCSSPlugin(&#123; advanced: true &#125;)</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">	</span><br><span class="line">【压缩html】</span><br><span class="line">* 将webpack.common.js中的HtmlWebpackPlugin插件复制过来</span><br><span class="line">* 追加一个配置项：minify:&#123; removeComments:true, collapseWhitespace:true&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    </p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+        <div id="reward-container">
+  <div>亲 可以请我吃个糖果吗</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="张志文 微信支付">
+        <p>微信支付</p>
+      </div>
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.png" alt="张志文 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      </div>
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/环境搭建/" rel="tag"># 环境搭建</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2019/07/31/Flex布局/" rel="next" title="Flex布局">
+                <i class="fa fa-chevron-left"></i> Flex布局
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="comments"></div>
+  
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.gif"
+      alt="张志文">
+  <p class="site-author-name" itemprop="name">张志文</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/zzw1260zzw" title="GitHub &rarr; https://github.com/zzw1260zzw" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:1075382998@qq.com" title="E-Mail &rarr; mailto:1075382998@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/6031661987" title="Weibo &rarr; https://weibo.com/6031661987" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://www.ruanyifeng.com/blog/" title="http://www.ruanyifeng.com/blog/" rel="noopener" target="_blank">阮一峰</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-了解Webpack相关"><span class="nav-number">1.</span> <span class="nav-text">1.了解Webpack相关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-学习文档"><span class="nav-number">2.</span> <span class="nav-text">2.学习文档 :</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-webpack的基本使用"><span class="nav-number">3.</span> <span class="nav-text">3.webpack的基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-使用webpack配置文件"><span class="nav-number">4.</span> <span class="nav-text">4.使用webpack配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-在package-json中配置npm命令"><span class="nav-number">5.</span> <span class="nav-text">5.在package.json中配置npm命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-使用loader解析less文件（使用less-loader）"><span class="nav-number">6.</span> <span class="nav-text">6.使用loader解析less文件（使用less-loader）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-file-loader处理图片资源"><span class="nav-number">7.</span> <span class="nav-text">7.file-loader处理图片资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-url-loader处理图片资源-amp-base64"><span class="nav-number">8.</span> <span class="nav-text">8.url-loader处理图片资源&amp;base64</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-使用插件提取css-合并为单独的文件"><span class="nav-number">9.</span> <span class="nav-text">9.使用插件提取css,合并为单独的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-js语法检查"><span class="nav-number">10.</span> <span class="nav-text">10.js语法检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-es6转es5"><span class="nav-number">11.</span> <span class="nav-text">11.es6转es5</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-html文件的处理和清除文件夹"><span class="nav-number">12.</span> <span class="nav-text">12.html文件的处理和清除文件夹</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-build环境的搭建"><span class="nav-number">13.</span> <span class="nav-text">13.build环境的搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-dev环境的搭建"><span class="nav-number">14.</span> <span class="nav-text">14.dev环境的搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-提取公共代码实现复用"><span class="nav-number">15.</span> <span class="nav-text">15.提取公共代码实现复用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-prod环境配置"><span class="nav-number">16.</span> <span class="nav-text">16.prod环境配置</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张志文</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.2.0</div>
+-->
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共9.4k字</span>
+</div>
+
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date(); 
+    function createtime() { 
+        var grt= new Date("7/31/2019 12:00:00");//在此处修改你的建站时间
+        now.setTime(now.getTime()+250); 
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+        document.getElementById("timeDate").innerHTML = " Runing "+dnum+" D "; 
+        document.getElementById("times").innerHTML = hnum + " H " + mnum + " M " + snum + " S"; 
+    } 
+setInterval("createtime()",250);
+</script>
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+  
+  <script src="/js/affix.js?v=7.2.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 't1J1RnbEGF4bafWpyyd3SeBY-gzGzoHsz',
+    appKey: 'wXd2s1bHTQ11nO35Imwv5m1Y',
+    placeholder: '欢迎大家积极评论！！！',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hijiki.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body>
+</html>
